@@ -27,8 +27,14 @@ async function generateCertificates(batch) {
   let browser;
 
   try {
-    browser = await puppeteer.launch({ headless: true });
-
+    browser = await puppeteer.launch({
+    headless: true,
+    args:
+    process.env.PUPPETEER_NO_SANDBOX === "true"
+      ? ["--no-sandbox", "--disable-setuid-sandbox"]
+      : [],
+    });
+ 
     for (const user of users) {
       try {
         const existingCertificate = await Certificate.findOne({
